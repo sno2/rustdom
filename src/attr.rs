@@ -1,3 +1,4 @@
+use crate::{Node, NodeType};
 use std::sync::{Arc, Mutex, MutexGuard};
 
 #[derive(Debug, Clone)]
@@ -37,6 +38,131 @@ impl Attr {
 impl From<(&'static str, &'static str)> for Attr {
 	fn from(src: (&'static str, &'static str)) -> Attr {
 		Attr::new(src.0, src.1)
+	}
+}
+
+impl Node for Attr {
+	type Value = &'static str;
+	type Child = Attr;
+
+	fn namespace_uri(&self) -> Option<&'static str> {
+		None
+	}
+
+	fn child_nodes<T: Node>(&self) -> Option<&'static [T]> {
+		None
+	}
+
+	fn first_child<T: Node>(&self) -> Option<T> {
+		None
+	}
+
+	fn is_connected(&self) -> bool {
+		todo!() // not on mdn
+	}
+
+	fn last_child<T: Node>(&self) -> Option<T> {
+		None
+	}
+
+	fn next_sibling<T: Node>(&self) -> Option<T> {
+		None
+	}
+
+	fn node_name(&self) -> &'static str {
+		self.name()
+	}
+
+	fn node_type(&self) -> NodeType {
+		NodeType::AttributeNode
+	}
+
+	fn node_value(&self) -> &'static str {
+		self.value()
+	}
+
+	fn set_node_value(&mut self, new_value: &'static str) {
+		self.set_value(new_value);
+	}
+
+	fn owner_document<T: Node>(&self) -> T {
+		unimplemented!()
+	}
+
+	fn parent_node<T: Node>(&self) -> Option<T> {
+		None
+	}
+
+	fn parent_element<T: Node>(&self) -> Option<T> {
+		todo!()
+	}
+
+	fn previous_sibling<T: Node>(&self) -> Option<T> {
+		None
+	}
+
+	fn text_content(&self) -> &'static str {
+		self.value()
+	}
+
+	fn set_text_content(&self, new_content: &'static str) {
+		self.set_value(new_content);
+	}
+
+	fn append_child<T: Node>(&mut self, child: T) {
+		unimplemented!()
+	}
+
+	fn clone_node(&self) -> Self::Child {
+		unimplemented!()
+	}
+
+	fn contains(&self, child: Self::Child) -> bool {
+		unimplemented!()
+	}
+
+	fn get_root_node<T: Node>(&self) -> T {
+		unimplemented!()
+	}
+
+	fn has_child_nodes(&self) -> bool {
+		unimplemented!()
+	}
+
+	fn insert_before<T: Node>(&mut self, before_node: T) {
+		unimplemented!()
+	}
+
+	fn is_default_namespace(&self) -> bool {
+		unimplemented!()
+	}
+
+	fn is_equal_node<T: Node>(&self, other: T) -> bool {
+		unimplemented!()
+	}
+
+	fn is_same_node(&self, other: Self) -> bool {
+		unimplemented!()
+	}
+
+	fn lookup_prefix(&self) -> Option<&'static str> {
+		todo!()
+	}
+
+	fn lookup_namespace_uri(&self, prefix: &'static str) -> Option<&'static str> {
+		todo!()
+	}
+
+	fn normalize(&mut self) {
+		todo!()
+	}
+
+	fn remove_child(&mut self, child: Self::Child) {
+		todo!()
+	}
+
+	fn replace_child(&mut self, new_child: Self::Child, old_child: Self::Child) {
+		todo!()
 	}
 }
 

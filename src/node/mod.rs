@@ -3,22 +3,22 @@ mod node_type;
 pub use node_type::NodeType;
 
 pub trait Node<'a> {
-	fn get_base_uri(&self) -> &'static str;
-	fn get_child_nodes<T: Node<'static>>(&self) -> &'static [T];
-	fn get_first_child<T: Node<'static>>(&self) -> T;
-	fn get_is_connected(&self) -> bool;
-	fn get_last_child<T: Node<'static>>(&self) -> T;
-	fn get_next_sibling<T: Node<'static>>(&self) -> T;
-	fn get_node_name(&self) -> &'a str;
-	fn get_node_type(&self) -> NodeType;
-	fn get_node_value(&self) -> Option<&'static str>;
+	fn base_uri(&self) -> &'static str;
+	fn child_nodes<T: Node<'static>>(&self) -> &'static [T];
+	fn first_child<T: Node<'static>>(&self) -> T;
+	fn is_connected(&self) -> bool;
+	fn last_child<T: Node<'static>>(&self) -> T;
+	fn next_sibling<T: Node<'static>>(&self) -> T;
+	fn node_name(&self) -> &'a str;
+	fn node_type(&self) -> NodeType;
+	fn node_value(&self) -> Option<&'static str>;
 	fn set_node_value(&mut self);
 	// Use Document:
-	fn get_owner_document<T: Node<'static>>(&self) -> T;
-	fn get_parent_node<T: Node<'static>>(&self) -> Option<T>;
-	fn get_parent_element<T: Node<'static>>(&self) -> Option<T>;
-	fn get_previous_sibling<T: Node<'static>>(&self) -> Option<T>;
-	fn get_text_content(&self) -> &'static str;
+	fn owner_document<T: Node<'static>>(&self) -> T;
+	fn parent_node<T: Node<'static>>(&self) -> Option<T>;
+	fn parent_element<T: Node<'static>>(&self) -> Option<T>;
+	fn previous_sibling<T: Node<'static>>(&self) -> Option<T>;
+	fn text_content(&self) -> &'static str;
 	fn set_text_content(&self, content: &'static str);
 	fn append_child<T: Node<'static>>(&mut self, child: T);
 	fn clone_node<T: Node<'static>>(&self) -> T;

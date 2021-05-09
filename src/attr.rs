@@ -1,17 +1,17 @@
 use crate::{Node, NodeType};
-use std::sync::{Arc, Mutex, MutexGuard};
+use std::sync::{Arc, RwLock};
 
 #[derive(Debug, Clone)]
 pub struct Attr {
 	name: Arc<&'static str>,
-	value: Arc<Mutex<&'static str>>,
+	value: Arc<RwLock<&'static str>>,
 }
 
 impl Attr {
 	pub fn new(name: &'static str, value: &'static str) -> Self {
 		Self {
 			name: Arc::new(name),
-			value: Arc::new(Mutex::new(value)),
+			value: Arc::new(RwLock::new(value)),
 		}
 	}
 
@@ -19,18 +19,17 @@ impl Attr {
 		*self.name
 	}
 
-	pub fn value(&self) -> &'static str {
-		*self.value_guard()
+	pub fn value_lock(&self) -> Arc<RwLock<&'static str>> {
+		self.value.clone()
 	}
 
-	pub fn value_guard(&self) -> MutexGuard<&'static str> {
-		self.value
-			.try_lock()
-			.expect("Unable to get mutex guard from attribute.")
+	pub fn value(&self) -> &'static str {
+		*self.value.try_read().unwrap()
 	}
 
 	pub fn set_value(&self, new_value: &'static str) {
-		let mut guard = self.value_guard();
+		let lock = self.value_lock();
+		let mut guard = lock.try_write().unwrap();
 		*guard = new_value;
 	}
 }
@@ -193,10 +192,11 @@ mod tests {
 	fn single_threaded_guards() {
 		let attr = Attr::new("type", "text");
 		{
-			let mut value_guard = attr.value_guard();
-			assert_eq!(*value_guard, "text");
-			*value_guard = "password";
-			assert_eq!(*value_guard, "password");
+			let lock = attr.value_lock();
+			let mut guard = lock.try_write().unwrap();
+			assert_eq!(*guard, "text");
+			*guard = "password";
+			assert_eq!(*guard, "password");
 		}
 		assert_eq!(attr.value(), "password");
 	}

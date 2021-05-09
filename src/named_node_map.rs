@@ -1,29 +1,29 @@
 use crate::Attr;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, RwLock};
 
 #[derive(Debug, Clone)]
 pub struct NamedNodeMap {
-	items: Arc<Mutex<Vec<Arc<Mutex<Attr>>>>>,
+	items: Arc<RwLock<Vec<Arc<Mutex<Attr>>>>>,
 }
 
 impl NamedNodeMap {
 	pub fn new() -> Self {
 		Self {
-			items: Arc::new(Mutex::new(Vec::new())),
+			items: Arc::new(RwLock::new(Vec::new())),
 		}
 	}
 
 	pub fn length(&self) -> usize {
-		self.items.try_lock().unwrap().len()
+		self.items.try_read().unwrap().len()
 	}
 
 	pub(crate) fn add(&mut self, item: Attr) {
-		let mut items = self.items.try_lock().unwrap();
+		let mut items = self.items.try_write().unwrap();
 		items.push(Arc::new(Mutex::new(item)));
 	}
 
 	pub fn item(&self, idx: usize) -> Option<Arc<Mutex<Attr>>> {
-		let items = self.items.try_lock().unwrap();
+		let items = self.items.try_read().unwrap();
 		if idx > items.len() {
 			None
 		} else {

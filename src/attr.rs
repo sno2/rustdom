@@ -34,6 +34,12 @@ impl Attr {
 	}
 }
 
+impl From<(&'static str, &'static str)> for Attr {
+	fn from(src: (&'static str, &'static str)) -> Attr {
+		Attr::new(src.0, src.1)
+	}
+}
+
 #[cfg(test)]
 mod tests {
 	use super::Attr;
@@ -72,15 +78,26 @@ mod tests {
 	#[test]
 	fn multithreaded_mutations() {
 		let attr = Arc::new(Mutex::new(Attr::new("type", "text")));
-		let attr2 = attr.clone();
 
-		let handler = thread::spawn(move || {
-			let guard = attr2.try_lock().unwrap();
-			assert_eq!("text", guard.value());
-			guard.set_value("foo");
-		});
+		let mut handlers = vec![];
 
-		handler.join().unwrap();
+		let mut is_last = false;
+		for i in 0..2 {
+			let attr2 = attr.clone();
+			handlers.push(thread::spawn(move || {
+				let guard = attr2.try_lock().unwrap();
+				if is_last {
+					assert_eq!(guard.value(), "foo");
+				} else {
+					guard.set_value("foo");
+					is_last = true;
+				}
+			}));
+		}
+
+		for handler in handlers {
+			handler.join().unwrap();
+		}
 
 		let guard = attr.try_lock().unwrap();
 		assert_eq!(guard.name(), "type");

@@ -103,4 +103,11 @@ mod tests {
 		assert_eq!(guard.name(), "type");
 		assert_eq!(guard.value(), "foo");
 	}
+
+	#[test]
+	fn from_trait_implementation() {
+		let attr = Attr::from(("type", "text"));
+		assert_eq!(attr.name(), "type");
+		assert_eq!(attr.value(), "text");
+	}
 }

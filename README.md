@@ -18,5 +18,5 @@ present and future rights to this software under copyright law.
 
 ## License
 
-Rustdom is licensed under the Unlicense which places it in the public
+Rustdom is licensed under the [Unlicense](http://unlicense.org/) which places it in the public
 domain. See the [attached license file](./UNILICENSE) for more info.

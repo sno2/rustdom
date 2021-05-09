@@ -1,7 +1,8 @@
 #[derive(Debug)]
 pub enum NodeType {
 	ElementNode = 1,
-	TextNode = 3,
+	AttributeNode,
+	TextNode,
 	CDataSectionNode,
 	ProcessingInstructionNode = 7,
 	CommentNode,

@@ -1,7 +1,3 @@
-use std::{cell::Cell, convert::TryInto};
-
-use crate::{Attr, Node, NodeType};
-
 #[derive(Debug)]
 pub struct Element<'a> {
 	tag_name: &'a str,

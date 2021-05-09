@@ -1,9 +1,5 @@
 use crate::Attr;
-use std::{
-	borrow::BorrowMut,
-	ops::{Deref, DerefMut},
-	sync::{Arc, Mutex, MutexGuard},
-};
+use std::sync::{Arc, Mutex};
 
 #[derive(Debug, Clone)]
 pub struct NamedNodeMap {

@@ -7,7 +7,7 @@ use std::{
 
 #[derive(Debug, Clone)]
 pub struct NamedNodeMap {
-	pub(crate) items: Arc<Mutex<Vec<Arc<Mutex<Attr>>>>>,
+	items: Arc<Mutex<Vec<Arc<Mutex<Attr>>>>>,
 }
 
 impl NamedNodeMap {

@@ -3,8 +3,8 @@ use std::sync::{Arc, Mutex, MutexGuard};
 
 #[derive(Debug, Clone)]
 pub struct Attr {
-	pub(crate) name: Arc<&'static str>,
-	pub(crate) value: Arc<Mutex<&'static str>>,
+	name: Arc<&'static str>,
+	value: Arc<Mutex<&'static str>>,
 }
 
 impl Attr {

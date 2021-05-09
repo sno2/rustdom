@@ -4,7 +4,7 @@ use crate::{Attr, Node, NodeType};
 
 #[derive(Debug)]
 pub struct Element<'a> {
-	pub(crate) tag_name: &'a str,
+	tag_name: &'a str,
 }
 
 impl<'a> Element<'a> {
@@ -12,4 +12,3 @@ impl<'a> Element<'a> {
 		Self { tag_name }
 	}
 }
-

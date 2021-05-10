@@ -1,4 +1,4 @@
-use crate::NamedNodeMap;
+use crate::{Attr, NamedNodeMap};
 use std::sync::{Arc, RwLock};
 
 #[derive(Debug)]
@@ -21,6 +21,22 @@ impl Element {
 	pub fn attributes_lock(&self) -> Arc<RwLock<NamedNodeMap>> {
 		self.attrs.clone()
 	}
+
+	pub fn get_attribute(&self, name: &'static str) -> Option<&'static str> {
+		let lock = self.attributes_lock();
+		let map = lock.read().unwrap();
+		let item = map.get_named_item(name);
+		return match item {
+			Some(attr) => Some(attr.read().unwrap().value()),
+			_ => None,
+		};
+	}
+
+	pub fn set_attribute(&mut self, name: &'static str, value: &'static str) {
+		let lock = self.attributes_lock();
+		let mut map = lock.write().unwrap();
+		map.set_named_item(Attr::new(name, value));
+	}
 }
 
 #[cfg(test)]
@@ -29,7 +45,7 @@ mod tests {
 	use crate::Attr;
 
 	#[test]
-	fn basic_functionality() {
+	fn mutating_attributes_lock() {
 		let el = Element::new("h1");
 		let lock = el.attributes_lock();
 		{
@@ -37,5 +53,14 @@ mod tests {
 			attributes.add(Attr::new("data-name", "carter"));
 		}
 		assert_eq!(lock.read().unwrap().length(), 1);
+	}
+
+	#[test]
+	fn attributes_helpers() {
+		let mut el = Element::new("h1");
+		// HANGING HERE!
+		el.set_attribute("type", "text");
+
+		assert_eq!(el.get_attribute("type").unwrap(), "text");
 	}
 }

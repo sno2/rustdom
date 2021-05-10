@@ -1,9 +1,9 @@
 use crate::Attr;
-use std::sync::{Arc, Mutex, RwLock};
+use std::sync::{Arc, RwLock};
 
 #[derive(Debug, Clone)]
 pub struct NamedNodeMap {
-	items: Arc<RwLock<Vec<Arc<Mutex<Attr>>>>>,
+	pub(crate) items: Arc<RwLock<Vec<Arc<RwLock<Attr>>>>>,
 }
 
 impl NamedNodeMap {
@@ -18,17 +18,48 @@ impl NamedNodeMap {
 	}
 
 	pub(crate) fn add(&mut self, item: Attr) {
-		let mut items = self.items.write().unwrap();
-		items.push(Arc::new(Mutex::new(item)));
+		let lock = self.items_lock();
+		let mut items = lock.write().unwrap();
+		items.push(Arc::new(RwLock::new(item)));
 	}
 
-	pub fn item(&self, idx: usize) -> Option<Arc<Mutex<Attr>>> {
+	fn items_lock(&self) -> Arc<RwLock<Vec<Arc<RwLock<Attr>>>>> {
+		self.items.clone()
+	}
+
+	pub fn item(&self, idx: usize) -> Option<Arc<RwLock<Attr>>> {
 		let items = self.items.read().unwrap();
 		if idx > items.len() {
 			None
 		} else {
 			Some(items[idx].clone())
 		}
+	}
+
+	pub fn get_named_item(&self, name: &'static str) -> Option<Arc<RwLock<Attr>>> {
+		let lock = self.items_lock();
+		let items = lock.read().unwrap();
+
+		for item in items.iter() {
+			if item.read().unwrap().name() == name {
+				return Some(item.clone());
+			}
+		}
+		None
+	}
+
+	pub fn set_named_item(&mut self, attr: Attr) {
+		let lock = self.items_lock();
+		let items = lock.write().unwrap();
+		let name = attr.name();
+		for item_lock in items.iter() {
+			let mut item_guard = item_lock.write().unwrap();
+			if item_guard.name() == name {
+				*item_guard = attr;
+				return;
+			}
+		}
+		self.add(attr);
 	}
 }
 

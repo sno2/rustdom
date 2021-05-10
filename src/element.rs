@@ -15,6 +15,9 @@ impl Element {
 		}
 	}
 
+	/// A lower-level method that obtains the lock to read or write
+	/// to the [`NamedNodeMap`] that holds the attributes for this
+	/// element.
 	pub fn attributes_lock(&self) -> Arc<RwLock<NamedNodeMap>> {
 		self.attrs.clone()
 	}

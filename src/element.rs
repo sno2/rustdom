@@ -25,10 +25,10 @@ impl Element {
 		let lock = self.attributes_lock();
 		let map = lock.read().unwrap();
 		let item = map.get_named_item(name);
-		return match item {
+		match item {
 			Some(attr) => Some(attr.read().unwrap().value()),
 			_ => None,
-		};
+		}
 	}
 
 	pub fn set_attribute(&mut self, name: &'static str, value: &'static str) {

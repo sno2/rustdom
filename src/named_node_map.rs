@@ -61,6 +61,11 @@ impl NamedNodeMap {
 		}
 		items.push(Arc::new(RwLock::new(attr)));
 	}
+
+	/// Removes a node from the node map by its identifiable [`Attr`] implementation.
+	pub fn remove_named_item(&mut self, attr: Attr) {
+		todo!();
+	}
 }
 
 #[cfg(test)]

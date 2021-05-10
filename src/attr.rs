@@ -8,6 +8,7 @@ pub struct Attr {
 }
 
 impl Attr {
+	/// Creates a new [`Attr`] with the given name and value.
 	pub fn new(name: &'static str, value: &'static str) -> Self {
 		Self {
 			name: Arc::new(name),
@@ -15,6 +16,7 @@ impl Attr {
 		}
 	}
 
+	/// Gets the value of the attribute.
 	pub fn name(&self) -> &'static str {
 		*self.name
 	}

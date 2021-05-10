@@ -58,7 +58,6 @@ mod tests {
 	#[test]
 	fn attributes_helpers() {
 		let mut el = Element::new("h1");
-		// HANGING HERE!
 		el.set_attribute("type", "text");
 
 		assert_eq!(el.get_attribute("type").unwrap(), "text");

@@ -20,10 +20,11 @@ impl NamedNodeMap {
 	}
 
 	/// Adds a new [`Attr`] into the node map.
+	#[allow(dead_code)]
 	pub(crate) fn add(&self, item: Attr) {
 		self.add_raw(Arc::new(RwLock::new(item)));
 	}
-
+	#[allow(dead_code)]
 	pub(crate) fn add_raw(&self, item: Arc<RwLock<Attr>>) {
 		let lock = self.items_lock();
 		let mut items = lock.write().unwrap();
@@ -76,7 +77,7 @@ impl NamedNodeMap {
 
 	/// Removes a node from the node map by its identifiable [`Attr`]
 	/// implementation.
-	pub fn remove_named_item(&self, attr: Attr) {
+	pub fn remove_named_item(&self, _attr: Attr) {
 		todo!();
 	}
 }
@@ -92,14 +93,14 @@ mod tests {
 
 	#[test]
 	fn setting_attributes() {
-		let mut store = NamedNodeMap::new();
+		let store = NamedNodeMap::new();
 		store.set_named_item(Attr::new("data-age", "forever"));
 		assert_eq!(store.length(), 1);
 	}
 
 	#[test]
 	fn flushing_duplicates() {
-		let mut store = NamedNodeMap::new();
+		let store = NamedNodeMap::new();
 		store.set_named_item(Attr::new("data-age", "forever"));
 		store.set_named_item(Attr::new("data-age", "never"));
 		assert_eq!(store.length(), 1);
@@ -113,7 +114,7 @@ mod tests {
 		let store = Arc::new(Mutex::new(NamedNodeMap::new()));
 
 		for _ in 0..ITER_COUNT {
-			let mut map = store.try_lock().unwrap();
+			let map = store.try_lock().unwrap();
 			map.add(Attr::new("type", "text"));
 		}
 
@@ -129,7 +130,7 @@ mod tests {
 			// We need to clone to stop the thread closure from moving the original store.
 			let store = store.clone();
 			let handler = thread::spawn(move || {
-				let mut map = store.lock().unwrap();
+				let map = store.lock().unwrap();
 				map.add(Attr::new("type", "text"));
 			});
 			handlers.push(handler);

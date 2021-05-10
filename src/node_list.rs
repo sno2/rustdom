@@ -25,11 +25,13 @@ impl<T: Node> NodeList<T> {
 		}
 	}
 
+	#[allow(dead_code)]
 	pub(crate) fn add_raw(&self, item: Arc<RwLock<T>>) {
 		let mut guard = self.items.write().unwrap();
 		guard.push(item);
 	}
 
+	#[allow(dead_code)]
 	pub(crate) fn add(&self, item: T) {
 		self.add_raw(Arc::new(RwLock::new(item)));
 	}
@@ -61,7 +63,7 @@ mod tests {
 
 	#[test]
 	fn elements_maintain_state() {
-		let mut list: NodeList<Attr> = NodeList::new();
+		let list: NodeList<Attr> = NodeList::new();
 		let attr = Attr::new("type", "text");
 		list.add(attr.clone());
 		assert_eq!(attr.value(), "text");

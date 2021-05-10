@@ -38,7 +38,7 @@ impl Element {
 	/// Sets the value of an attribute given the name and value.
 	pub fn set_attribute(&self, name: &'static str, value: &'static str) {
 		let lock = self.attributes_lock();
-		let mut map = lock.write().unwrap();
+		let map = lock.write().unwrap();
 		map.set_named_item(Attr::new(name, value));
 	}
 }
@@ -53,7 +53,7 @@ mod tests {
 		let el = Element::new("h1");
 		let lock = el.attributes_lock();
 		{
-			let mut attributes = lock.write().unwrap();
+			let attributes = lock.write().unwrap();
 			attributes.add(Attr::new("data-name", "carter"));
 		}
 		assert_eq!(lock.read().unwrap().length(), 1);
@@ -61,7 +61,7 @@ mod tests {
 
 	#[test]
 	fn attributes_helpers() {
-		let mut el = Element::new("h1");
+		let el = Element::new("h1");
 		match el.get_attribute("type") {
 			None => (),
 			_ => panic!("Element should not have an attribute"),

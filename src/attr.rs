@@ -107,7 +107,7 @@ impl Node for Attr {
 		self.set_value(new_content);
 	}
 
-	fn append_child<T: Node>(&mut self, child: T) {
+	fn append_child<T: Node>(&mut self, _child: T) {
 		unimplemented!()
 	}
 
@@ -115,7 +115,7 @@ impl Node for Attr {
 		unimplemented!()
 	}
 
-	fn contains(&self, child: Self::Child) -> bool {
+	fn contains(&self, _child: Self::Child) -> bool {
 		unimplemented!()
 	}
 
@@ -127,7 +127,7 @@ impl Node for Attr {
 		unimplemented!()
 	}
 
-	fn insert_before<T: Node>(&mut self, before_node: T) {
+	fn insert_before<T: Node>(&mut self, _before_node: T) {
 		unimplemented!()
 	}
 
@@ -135,11 +135,11 @@ impl Node for Attr {
 		unimplemented!()
 	}
 
-	fn is_equal_node<T: Node>(&self, other: T) -> bool {
+	fn is_equal_node<T: Node>(&self, _other: T) -> bool {
 		unimplemented!()
 	}
 
-	fn is_same_node(&self, other: Self) -> bool {
+	fn is_same_node(&self, _other: Self) -> bool {
 		unimplemented!()
 	}
 
@@ -147,7 +147,7 @@ impl Node for Attr {
 		todo!()
 	}
 
-	fn lookup_namespace_uri(&self, prefix: &'static str) -> Option<&'static str> {
+	fn lookup_namespace_uri(&self, _prefix: &'static str) -> Option<&'static str> {
 		todo!()
 	}
 
@@ -155,11 +155,11 @@ impl Node for Attr {
 		todo!()
 	}
 
-	fn remove_child(&mut self, child: Self::Child) {
+	fn remove_child(&mut self, _child: Self::Child) {
 		todo!()
 	}
 
-	fn replace_child(&mut self, new_child: Self::Child, old_child: Self::Child) {
+	fn replace_child(&mut self, _new_child: Self::Child, _old_child: Self::Child) {
 		todo!()
 	}
 }
@@ -204,16 +204,12 @@ mod tests {
 
 		let mut handlers = vec![];
 
-		let mut is_last = false;
-		for i in 0..2 {
+		for _ in 0..2 {
 			let attr2 = attr.clone();
 			handlers.push(thread::spawn(move || {
 				let guard = attr2.lock().unwrap();
-				if is_last {
-					assert_eq!(guard.value(), "foo");
-				} else {
+				if guard.value() != "foo" {
 					guard.set_value("foo");
-					is_last = true;
 				}
 			}));
 		}
@@ -221,6 +217,8 @@ mod tests {
 		for handler in handlers {
 			handler.join().unwrap();
 		}
+
+		assert_eq!(attr.lock().unwrap().value(), "foo");
 
 		let guard = attr.lock().unwrap();
 		assert_eq!(guard.name(), "type");

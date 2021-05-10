@@ -50,7 +50,7 @@ impl NamedNodeMap {
 
 	pub fn set_named_item(&mut self, attr: Attr) {
 		let lock = self.items_lock();
-		let items = lock.write().unwrap();
+		let mut items = lock.write().unwrap();
 		let name = attr.name();
 		for item_lock in items.iter() {
 			let mut item_guard = item_lock.write().unwrap();
@@ -59,7 +59,7 @@ impl NamedNodeMap {
 				return;
 			}
 		}
-		self.add(attr);
+		items.push(Arc::new(RwLock::new(attr)));
 	}
 }
 

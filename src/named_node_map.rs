@@ -14,16 +14,16 @@ impl NamedNodeMap {
 	}
 
 	pub fn length(&self) -> usize {
-		self.items.try_read().unwrap().len()
+		self.items.read().unwrap().len()
 	}
 
 	pub(crate) fn add(&mut self, item: Attr) {
-		let mut items = self.items.try_write().unwrap();
+		let mut items = self.items.write().unwrap();
 		items.push(Arc::new(Mutex::new(item)));
 	}
 
 	pub fn item(&self, idx: usize) -> Option<Arc<Mutex<Attr>>> {
-		let items = self.items.try_read().unwrap();
+		let items = self.items.read().unwrap();
 		if idx > items.len() {
 			None
 		} else {

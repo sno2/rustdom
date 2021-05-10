@@ -1,5 +1,5 @@
 use crate::NamedNodeMap;
-use std::sync::{Arc, Mutex, MutexGuard, RwLock, RwLockReadGuard};
+use std::sync::{Arc, RwLock};
 
 #[derive(Debug)]
 pub struct Element {
@@ -30,9 +30,9 @@ mod tests {
 		let el = Element::new("h1");
 		let lock = el.attributes_lock();
 		{
-			let mut attributes = lock.try_write().unwrap();
+			let mut attributes = lock.write().unwrap();
 			attributes.add(Attr::new("data-name", "carter"));
 		}
-		assert_eq!(lock.try_read().unwrap().length(), 1);
+		assert_eq!(lock.read().unwrap().length(), 1);
 	}
 }

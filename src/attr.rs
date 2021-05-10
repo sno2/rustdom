@@ -24,12 +24,12 @@ impl Attr {
 	}
 
 	pub fn value(&self) -> &'static str {
-		*self.value.try_read().unwrap()
+		*self.value.read().unwrap()
 	}
 
 	pub fn set_value(&self, new_value: &'static str) {
 		let lock = self.value_lock();
-		let mut guard = lock.try_write().unwrap();
+		let mut guard = lock.write().unwrap();
 		*guard = new_value;
 	}
 }
@@ -193,7 +193,7 @@ mod tests {
 		let attr = Attr::new("type", "text");
 		{
 			let lock = attr.value_lock();
-			let mut guard = lock.try_write().unwrap();
+			let mut guard = lock.write().unwrap();
 			assert_eq!(*guard, "text");
 			*guard = "password";
 			assert_eq!(*guard, "password");
@@ -211,7 +211,7 @@ mod tests {
 		for i in 0..2 {
 			let attr2 = attr.clone();
 			handlers.push(thread::spawn(move || {
-				let guard = attr2.try_lock().unwrap();
+				let guard = attr2.lock().unwrap();
 				if is_last {
 					assert_eq!(guard.value(), "foo");
 				} else {
@@ -225,7 +225,7 @@ mod tests {
 			handler.join().unwrap();
 		}
 
-		let guard = attr.try_lock().unwrap();
+		let guard = attr.lock().unwrap();
 		assert_eq!(guard.name(), "type");
 		assert_eq!(guard.value(), "foo");
 	}

@@ -21,10 +21,12 @@ impl Attr {
 		*self.name
 	}
 
+	/// Gets the value of the attribute.
 	pub fn value(&self) -> &'static str {
 		*self.value.read().unwrap()
 	}
 
+	/// Sets the value of the attribute.
 	pub fn set_value(&self, new_value: &'static str) {
 		let mut value = self.value.write().unwrap();
 		*value = new_value;

@@ -21,18 +21,13 @@ impl Attr {
 		*self.name
 	}
 
-	pub fn value_lock(&self) -> Arc<RwLock<&'static str>> {
-		self.value.clone()
-	}
-
 	pub fn value(&self) -> &'static str {
 		*self.value.read().unwrap()
 	}
 
 	pub fn set_value(&self, new_value: &'static str) {
-		let lock = self.value_lock();
-		let mut guard = lock.write().unwrap();
-		*guard = new_value;
+		let mut value = self.value.write().unwrap();
+		*value = new_value;
 	}
 }
 
@@ -194,11 +189,9 @@ mod tests {
 	fn single_threaded_guards() {
 		let attr = Attr::new("type", "text");
 		{
-			let lock = attr.value_lock();
-			let mut guard = lock.write().unwrap();
-			assert_eq!(*guard, "text");
-			*guard = "password";
-			assert_eq!(*guard, "password");
+			assert_eq!(attr.value(), "text");
+			attr.set_value("password");
+			assert_eq!(attr.value(), "password");
 		}
 		assert_eq!(attr.value(), "password");
 	}

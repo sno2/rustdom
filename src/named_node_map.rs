@@ -7,26 +7,31 @@ pub struct NamedNodeMap {
 }
 
 impl NamedNodeMap {
+	/// Creates a new, empty node map.
 	pub fn new() -> Self {
 		Self {
 			items: Arc::new(RwLock::new(Vec::new())),
 		}
 	}
 
+	/// Gets the number of items within the current node map.
 	pub fn length(&self) -> usize {
 		self.items.read().unwrap().len()
 	}
 
+	/// Adds a new [`Attr`] into the node map.
 	pub(crate) fn add(&mut self, item: Attr) {
 		let lock = self.items_lock();
 		let mut items = lock.write().unwrap();
 		items.push(Arc::new(RwLock::new(item)));
 	}
 
+	/// Gets the lock for accessing a vector that includes all of the items.
 	fn items_lock(&self) -> Arc<RwLock<Vec<Arc<RwLock<Attr>>>>> {
 		self.items.clone()
 	}
 
+	/// Gets the node at the given index within the node map.
 	pub fn item(&self, idx: usize) -> Option<Arc<RwLock<Attr>>> {
 		let items = self.items.read().unwrap();
 		if idx > items.len() {
@@ -36,6 +41,7 @@ impl NamedNodeMap {
 		}
 	}
 
+	/// Gets the node by its corresponding name within the node map.
 	pub fn get_named_item(&self, name: &'static str) -> Option<Arc<RwLock<Attr>>> {
 		let lock = self.items_lock();
 		let items = lock.read().unwrap();
@@ -48,6 +54,8 @@ impl NamedNodeMap {
 		None
 	}
 
+	/// Either adds or replaces the existing [`Attr`] depending on whether there
+	/// is another node within the map identified by the same name.
 	pub fn set_named_item(&mut self, attr: Attr) {
 		let lock = self.items_lock();
 		let mut items = lock.write().unwrap();

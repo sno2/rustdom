@@ -1,13 +1,14 @@
 use crate::{Attr, NamedNodeMap};
 use std::sync::{Arc, RwLock};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Element {
 	tag_name: Arc<&'static str>,
 	attrs: Arc<RwLock<NamedNodeMap>>,
 }
 
 impl Element {
+	/// Creates a new [`Element`] given the tag name.
 	pub fn new(tag_name: &'static str) -> Self {
 		Self {
 			tag_name: Arc::new(tag_name),
@@ -21,6 +22,9 @@ impl Element {
 		self.attrs.clone()
 	}
 
+	/// Gets the value of an attribute given its name. Due to attributes not
+	/// always having a value, it returns an [`Option`] that might include the
+	/// value.
 	pub fn get_attribute(&self, name: &'static str) -> Option<&'static str> {
 		let lock = self.attributes_lock();
 		let map = lock.read().unwrap();
@@ -31,6 +35,7 @@ impl Element {
 		}
 	}
 
+	/// Sets the value of an attribute given the name and value.
 	pub fn set_attribute(&mut self, name: &'static str, value: &'static str) {
 		let lock = self.attributes_lock();
 		let mut map = lock.write().unwrap();

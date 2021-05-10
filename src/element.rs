@@ -36,7 +36,7 @@ impl Element {
 	}
 
 	/// Sets the value of an attribute given the name and value.
-	pub fn set_attribute(&mut self, name: &'static str, value: &'static str) {
+	pub fn set_attribute(&self, name: &'static str, value: &'static str) {
 		let lock = self.attributes_lock();
 		let mut map = lock.write().unwrap();
 		map.set_named_item(Attr::new(name, value));

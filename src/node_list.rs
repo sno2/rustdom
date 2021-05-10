@@ -25,12 +25,12 @@ impl<T: Node> NodeList<T> {
 		}
 	}
 
-	pub(crate) fn add_raw(&mut self, item: Arc<RwLock<T>>) {
+	pub(crate) fn add_raw(&self, item: Arc<RwLock<T>>) {
 		let mut guard = self.items.write().unwrap();
 		guard.push(item);
 	}
 
-	pub(crate) fn add(&mut self, item: T) {
+	pub(crate) fn add(&self, item: T) {
 		self.add_raw(Arc::new(RwLock::new(item)));
 	}
 }
@@ -43,7 +43,7 @@ mod tests {
 
 	#[test]
 	fn lengths() {
-		let mut list = NodeList::new();
+		let list = NodeList::new();
 		assert_eq!(list.length(), 0);
 		let attr = Attr::new("data-age", "23");
 		list.add(attr);

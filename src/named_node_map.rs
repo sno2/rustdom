@@ -20,7 +20,7 @@ impl NamedNodeMap {
 	}
 
 	/// Adds a new [`Attr`] into the node map.
-	pub(crate) fn add(&mut self, item: Attr) {
+	pub(crate) fn add(&self, item: Attr) {
 		self.add_raw(Arc::new(RwLock::new(item)));
 	}
 
@@ -60,7 +60,7 @@ impl NamedNodeMap {
 
 	/// Either adds or replaces the existing [`Attr`] depending on whether there
 	/// is another node within the map identified by the same name.
-	pub fn set_named_item(&mut self, attr: Attr) {
+	pub fn set_named_item(&self, attr: Attr) {
 		let lock = self.items_lock();
 		let mut items = lock.write().unwrap();
 		let name = attr.name();
@@ -76,7 +76,7 @@ impl NamedNodeMap {
 
 	/// Removes a node from the node map by its identifiable [`Attr`]
 	/// implementation.
-	pub fn remove_named_item(&mut self, attr: Attr) {
+	pub fn remove_named_item(&self, attr: Attr) {
 		todo!();
 	}
 }

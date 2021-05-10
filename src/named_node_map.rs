@@ -72,6 +72,21 @@ mod tests {
 		thread,
 	};
 
+	#[test]
+	fn setting_attributes() {
+		let mut store = NamedNodeMap::new();
+		store.set_named_item(Attr::new("data-age", "forever"));
+		assert_eq!(store.length(), 1);
+	}
+
+	#[test]
+	fn flushing_duplicates() {
+		let mut store = NamedNodeMap::new();
+		store.set_named_item(Attr::new("data-age", "forever"));
+		store.set_named_item(Attr::new("data-age", "never"));
+		assert_eq!(store.length(), 1);
+	}
+
 	const ITER_COUNT: usize = 25;
 
 	#[test]

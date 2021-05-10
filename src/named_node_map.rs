@@ -21,9 +21,13 @@ impl NamedNodeMap {
 
 	/// Adds a new [`Attr`] into the node map.
 	pub(crate) fn add(&mut self, item: Attr) {
+		self.add_raw(Arc::new(RwLock::new(item)));
+	}
+
+	pub(crate) fn add_raw(&self, item: Arc<RwLock<Attr>>) {
 		let lock = self.items_lock();
 		let mut items = lock.write().unwrap();
-		items.push(Arc::new(RwLock::new(item)));
+		items.push(item);
 	}
 
 	/// Gets the lock for accessing a vector that includes all of the items.

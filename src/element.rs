@@ -51,12 +51,10 @@ mod tests {
 	#[test]
 	fn mutating_attributes_lock() {
 		let el = Element::new("h1");
-		let lock = el.attributes_lock();
-		{
-			let attributes = lock.write().unwrap();
-			attributes.add(Attr::new("data-name", "carter"));
-		}
-		assert_eq!(lock.read().unwrap().length(), 1);
+		let attributes = el.attributes_lock();
+		let attributes = attributes.read().unwrap();
+		attributes.add(Attr::new("data-name", "carter"));
+		assert_eq!(attributes.length(), 1);
 	}
 
 	#[test]

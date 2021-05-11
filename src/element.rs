@@ -1,10 +1,10 @@
 use crate::{Attr, NamedNodeMap};
-use std::sync::{Arc, RwLock};
+use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 pub struct Element {
 	tag_name: Arc<&'static str>,
-	attrs: Arc<RwLock<NamedNodeMap>>,
+	attrs: Arc<NamedNodeMap>,
 }
 
 impl Element {
@@ -12,13 +12,13 @@ impl Element {
 	pub fn new(tag_name: &'static str) -> Self {
 		Self {
 			tag_name: Arc::new(tag_name),
-			attrs: Arc::new(RwLock::new(NamedNodeMap::new())),
+			attrs: Arc::new(NamedNodeMap::new()),
 		}
 	}
 
 	/// A lower-level method that obtains the lock to read or write to the
 	/// [`NamedNodeMap`] that holds the attributes for this element.
-	pub fn attributes_lock(&self) -> Arc<RwLock<NamedNodeMap>> {
+	pub fn attributes(&self) -> Arc<NamedNodeMap> {
 		self.attrs.clone()
 	}
 
@@ -26,8 +26,7 @@ impl Element {
 	/// always having a value, it returns an [`Option`] that might include the
 	/// value.
 	pub fn get_attribute<T: Into<String>>(&self, name: T) -> Option<String> {
-		let lock = self.attributes_lock();
-		let map = lock.read().unwrap();
+		let map = self.attrs.clone();
 		let item = map.get_named_item(name);
 		match item {
 			Some(attr) => Some(attr.read().unwrap().value()),
@@ -37,8 +36,7 @@ impl Element {
 
 	/// Sets the value of an attribute given the name and value.
 	pub fn set_attribute<T: Into<String>>(&self, name: T, value: T) {
-		let lock = self.attributes_lock();
-		let map = lock.write().unwrap();
+		let map = self.attrs.clone();
 		map.set_named_item(Attr::new(name, value));
 	}
 }
@@ -49,10 +47,9 @@ mod tests {
 	use crate::Attr;
 
 	#[test]
-	fn mutating_attributes_lock() {
+	fn mutating_attributes() {
 		let el = Element::new("h1");
-		let attributes = el.attributes_lock();
-		let attributes = attributes.read().unwrap();
+		let attributes = el.attributes();
 		attributes.add(Attr::new("data-name", "carter"));
 		assert_eq!(attributes.length(), 1);
 	}

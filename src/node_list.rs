@@ -87,7 +87,7 @@ mod tests {
 			let list = list.clone();
 			let handler = thread::spawn(move || {
 				let list = list.lock().unwrap();
-				list.add(Attr::new(format!("data-{}", i), String::new()));
+				list.add(Attr::new(format!("data-{}", i), ""));
 			});
 			handlers.push(handler);
 		}

@@ -9,7 +9,11 @@ pub struct Attr {
 
 impl Attr {
 	/// Creates a new [`Attr`] with the given name and value.
-	pub fn new<T: Into<String>>(name: T, value: T) -> Self {
+	pub fn new<T, F>(name: T, value: F) -> Self
+	where
+		T: Into<String>,
+		F: Into<String>,
+	{
 		Self {
 			name: Arc::new(name.into()),
 			value: Arc::new(RwLock::new(value.into())),

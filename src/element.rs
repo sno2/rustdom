@@ -35,9 +35,13 @@ impl Element {
 	}
 
 	/// Sets the value of an attribute given the name and value.
-	pub fn set_attribute<T: Into<String>>(&self, name: T, value: T) {
+	pub fn set_attribute<T, F>(&self, name: T, value: F)
+	where
+		T: Into<String>,
+		F: Into<String>,
+	{
 		let map = self.attrs.clone();
-		map.set_named_item(Attr::new(name, value));
+		map.set_named_item(Attr::new(name.into(), value.into()));
 	}
 }
 

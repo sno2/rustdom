@@ -1,6 +1,7 @@
 use crate::Node;
 use std::sync::{Arc, RwLock};
 
+#[derive(Debug)]
 pub struct NodeList<T: Node> {
 	items: Arc<RwLock<Vec<Arc<RwLock<T>>>>>,
 }
@@ -39,6 +40,11 @@ impl<T: Node> NodeList<T> {
 
 #[cfg(test)]
 mod tests {
+	use std::{
+		sync::{Arc, Mutex},
+		thread,
+	};
+
 	use crate::Attr;
 
 	use super::NodeList;
@@ -69,5 +75,33 @@ mod tests {
 		assert_eq!(attr.value(), "text");
 		list.item(0).unwrap().write().unwrap().set_value("password");
 		assert_eq!(attr.value(), "password");
+	}
+
+	#[test]
+	fn multithreaded_mutations() {
+		const ITERS: usize = 10;
+		let list = Arc::new(Mutex::new(NodeList::new()));
+		let mut handlers = vec![];
+
+		for i in 0..ITERS {
+			let list = list.clone();
+			let handler = thread::spawn(move || {
+				let list = list.lock().unwrap();
+				list.add(Attr::new(format!("data-{}", i), String::new()));
+			});
+			handlers.push(handler);
+		}
+
+		for handler in handlers {
+			handler.join().unwrap();
+		}
+
+		for i in 0..ITERS {
+			let list = list.lock().unwrap();
+			list.item(i)
+				.expect("Attribute not added with multithreading.");
+		}
+
+		assert_eq!(list.lock().unwrap().length(), ITERS);
 	}
 }

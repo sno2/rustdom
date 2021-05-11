@@ -190,11 +190,9 @@ mod tests {
 	#[test]
 	fn single_threaded_guards() {
 		let attr = Attr::new("type", "text");
-		{
-			assert_eq!(attr.value(), "text");
-			attr.set_value("password");
-			assert_eq!(attr.value(), "password");
-		}
+		assert_eq!(attr.value(), "text");
+		attr.set_value("password");
+		assert_eq!(attr.value(), "password");
 		assert_eq!(attr.value(), "password");
 	}
 

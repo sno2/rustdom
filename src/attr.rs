@@ -3,47 +3,41 @@ use std::sync::{Arc, RwLock};
 
 #[derive(Debug, Clone)]
 pub struct Attr {
-	name: Arc<&'static str>,
-	value: Arc<RwLock<&'static str>>,
+	name: Arc<String>,
+	value: Arc<RwLock<String>>,
 }
 
 impl Attr {
 	/// Creates a new [`Attr`] with the given name and value.
-	pub fn new(name: &'static str, value: &'static str) -> Self {
+	pub fn new<T: Into<String>>(name: T, value: T) -> Self {
 		Self {
-			name: Arc::new(name),
-			value: Arc::new(RwLock::new(value)),
+			name: Arc::new(name.into()),
+			value: Arc::new(RwLock::new(value.into())),
 		}
 	}
 
 	/// Gets the value of the attribute.
-	pub fn name(&self) -> &'static str {
-		*self.name
+	pub fn name(&self) -> String {
+		(*self.name).clone()
 	}
 
 	/// Gets the value of the attribute.
-	pub fn value(&self) -> &'static str {
-		*self.value.read().unwrap()
+	pub fn value(&self) -> String {
+		(*self.value.read().unwrap()).clone()
 	}
 
 	/// Sets the value of the attribute.
-	pub fn set_value(&self, new_value: &'static str) {
+	pub fn set_value<T: Into<String>>(&self, new_value: T) {
 		let mut value = self.value.write().unwrap();
-		*value = new_value;
-	}
-}
-
-impl From<(&'static str, &'static str)> for Attr {
-	fn from(src: (&'static str, &'static str)) -> Attr {
-		Attr::new(src.0, src.1)
+		*value = new_value.into();
 	}
 }
 
 impl Node for Attr {
-	type Value = &'static str;
+	type Value = String;
 	type Child = Attr;
 
-	fn namespace_uri(&self) -> Option<&'static str> {
+	fn namespace_uri(&self) -> Option<String> {
 		None
 	}
 
@@ -67,7 +61,7 @@ impl Node for Attr {
 		None
 	}
 
-	fn node_name(&self) -> &'static str {
+	fn node_name(&self) -> String {
 		self.name()
 	}
 
@@ -75,11 +69,11 @@ impl Node for Attr {
 		NodeType::AttributeNode
 	}
 
-	fn node_value(&self) -> &'static str {
+	fn node_value(&self) -> String {
 		self.value()
 	}
 
-	fn set_node_value(&mut self, new_value: &'static str) {
+	fn set_node_value(&mut self, new_value: String) {
 		self.set_value(new_value);
 	}
 
@@ -99,11 +93,11 @@ impl Node for Attr {
 		None
 	}
 
-	fn text_content(&self) -> &'static str {
+	fn text_content(&self) -> String {
 		self.value()
 	}
 
-	fn set_text_content(&self, new_content: &'static str) {
+	fn set_text_content(&self, new_content: String) {
 		self.set_value(new_content);
 	}
 
@@ -143,11 +137,11 @@ impl Node for Attr {
 		unimplemented!()
 	}
 
-	fn lookup_prefix(&self) -> Option<&'static str> {
+	fn lookup_prefix(&self) -> Option<String> {
 		todo!()
 	}
 
-	fn lookup_namespace_uri(&self, _prefix: &'static str) -> Option<&'static str> {
+	fn lookup_namespace_uri(&self, _prefix: String) -> Option<String> {
 		todo!()
 	}
 
@@ -221,12 +215,5 @@ mod tests {
 		let guard = attr.lock().unwrap();
 		assert_eq!(guard.name(), "type");
 		assert_eq!(guard.value(), "foo");
-	}
-
-	#[test]
-	fn from_trait_implementation() {
-		let attr = Attr::from(("type", "text"));
-		assert_eq!(attr.name(), "type");
-		assert_eq!(attr.value(), "text");
 	}
 }

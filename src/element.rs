@@ -25,7 +25,7 @@ impl Element {
 	/// Gets the value of an attribute given its name. Due to attributes not
 	/// always having a value, it returns an [`Option`] that might include the
 	/// value.
-	pub fn get_attribute(&self, name: &'static str) -> Option<&'static str> {
+	pub fn get_attribute<T: Into<String>>(&self, name: T) -> Option<String> {
 		let lock = self.attributes_lock();
 		let map = lock.read().unwrap();
 		let item = map.get_named_item(name);
@@ -36,7 +36,7 @@ impl Element {
 	}
 
 	/// Sets the value of an attribute given the name and value.
-	pub fn set_attribute(&self, name: &'static str, value: &'static str) {
+	pub fn set_attribute<T: Into<String>>(&self, name: T, value: T) {
 		let lock = self.attributes_lock();
 		let map = lock.write().unwrap();
 		map.set_named_item(Attr::new(name, value));

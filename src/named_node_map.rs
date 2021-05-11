@@ -47,12 +47,12 @@ impl NamedNodeMap {
 	}
 
 	/// Gets the node by its corresponding name within the node map.
-	pub fn get_named_item(&self, name: &'static str) -> Option<Arc<RwLock<Attr>>> {
+	pub fn get_named_item<T: Into<String>>(&self, name: T) -> Option<Arc<RwLock<Attr>>> {
 		let lock = self.items_lock();
 		let items = lock.read().unwrap();
-
+		let normalized_name: String = name.into();
 		for item in items.iter() {
-			if item.read().unwrap().name() == name {
+			if item.read().unwrap().name() == normalized_name {
 				return Some(item.clone());
 			}
 		}

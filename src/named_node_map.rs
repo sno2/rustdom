@@ -24,6 +24,7 @@ impl NamedNodeMap {
 	pub(crate) fn add(&self, item: Attr) {
 		self.add_raw(Arc::new(RwLock::new(item)));
 	}
+
 	#[allow(dead_code)]
 	pub(crate) fn add_raw(&self, item: Arc<RwLock<Attr>>) {
 		let lock = self.items_lock();

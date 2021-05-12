@@ -61,9 +61,13 @@ mod tests {
 	#[test]
 	fn invalid_indices() {
 		let list: NodeList<Attr> = NodeList::new();
-		match list.item(0) {
-			None => (),
-			_ => panic!("Invalid index."),
+		if list.item(0).is_some() {
+			panic!("The list should not have any items.");
+		}
+		let attr = Attr::new("type", "text");
+		list.add(attr);
+		if list.item(0).is_none() {
+			panic!("The node list should have a single node.");
 		}
 	}
 

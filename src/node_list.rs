@@ -1,6 +1,9 @@
 use crate::Node;
 use std::sync::{Arc, RwLock};
 
+/// [`NodeList`] is inherently thread-safe. Therefore you do not actually need
+/// to wrap it in thread-safe mutation containers (like [`Mutex`] or [`RwLock`])
+/// to keep it thread-safe.
 #[derive(Debug)]
 pub struct NodeList<T: Node> {
 	items: Arc<RwLock<Vec<Arc<RwLock<T>>>>>,
